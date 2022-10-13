@@ -98,3 +98,55 @@ function handle(e){
 }
 renderElement(".form").addEventListener("submit", handle)
 
+let localObject = {
+    name: null,
+    year: null,
+    img: null,
+    text: "remove"
+}
+window.addEventListener("click", (element) => {
+    if(element.target.matches(".btns")){
+        let id = element.target.dataset.id
+        fetch(link)
+        .then((response) => response.json())
+        .then((data) => {
+            let array = data.Search
+            for(let i = 0; i<array.length; i++){
+                if(array[i].imdbID == id){
+                    localObject.name = array[i].Title
+                    localObject.year = array[i].Year
+                    localObject.img = array[i].Poster
+                    window.localStorage.setItem("javascript", JSON.stringify(localObject))       
+                }
+            }
+        })
+    }else{
+        console.log(false)
+    }
+})
+let ulList = renderElement(".ul_list") 
+let titleLocal = JSON.parse(window.localStorage.getItem("javascript")).name
+let imgs = JSON.parse(window.localStorage.getItem("javascript")).img
+let LocalRender = (e) => {
+    let li  = createTag("li")
+    li.className = "d-flex justify-content-between p-2 align-items-center"
+    let img = createTag("img")
+    img.alt = "Usha gap"
+    img.src = imgs
+    li.appendChild(img)
+    let h2 = createTag("h2")
+    h2.textContent = titleLocal 
+    li.appendChild(h2)
+    let button = createTag("button")
+    button.appendChild(textNode(localObject.text))
+    button.className = "btn btn-danger loes"
+    li.appendChild(button)
+    ulList.appendChild(li)
+}
+LocalRender()
+
+function removes(e){    
+    let parent = e.target.parentNode
+    parent.remove()
+}
+renderElement(".loes").addEventListener("click", removes)
